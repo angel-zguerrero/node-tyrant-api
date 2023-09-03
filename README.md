@@ -1,1 +1,1 @@
-# Node-Tyrant Api
+# Node Tyrant Api
