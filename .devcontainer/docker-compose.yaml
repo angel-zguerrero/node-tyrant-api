@@ -1,0 +1,33 @@
+version: "3"
+
+volumes:
+  tyrant-api-redis:
+
+networks:
+  ms-net:
+    name: "ms-net"
+    external: false
+  im-internal-net:
+    internal: true
+services:
+  tyrant-api-environment:
+    build:
+      context: .
+      dockerfile: ./Dockerfile   
+    volumes:
+      - ../:/tyrant-api-environment
+    networks:
+      - ms-net
+      - im-internal-net
+  tyrant-api-redis:
+    image: redis
+    volumes:
+      - tyrant-api-redis:/data
+    expose:
+      - 6379
+    ports:
+      - 6379:6379      
+    restart: unless-stopped
+    networks:
+      - ms-net
+      - im-internal-net

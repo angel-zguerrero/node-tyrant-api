@@ -1,0 +1,13 @@
+{
+  "name": "Tyrant Dev Container",
+  "dockerComposeFile": "./docker-compose.yaml",
+  "workspaceFolder": "/tyrant-api-environment",
+  "service": "tyrant-api-environment",
+  "settings": {
+    "terminal.integrated.shell.linux": "/bin/sh"
+  },
+  "extensions": [
+    "xabikos.JavaScriptSnippets"
+  ],
+  "forwardPorts": []
+}
