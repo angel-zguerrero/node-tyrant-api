@@ -4,11 +4,9 @@ volumes:
   tyrant-api-redis:
 
 networks:
-  ms-net:
-    name: "ms-net"
+  umbrella-net:
+    name: "umbrella-net"
     external: false
-  im-internal-net:
-    internal: true
 services:
   tyrant-api-environment:
     build:
@@ -17,8 +15,7 @@ services:
     volumes:
       - ../:/tyrant-api-environment
     networks:
-      - ms-net
-      - im-internal-net
+      - umbrella-net
   tyrant-api-redis:
     image: redis
     volumes:
@@ -29,5 +26,20 @@ services:
       - 6379:6379      
     restart: unless-stopped
     networks:
-      - ms-net
-      - im-internal-net
+      - umbrella-net
+  tyrant-api-mongo:
+    image: azguerrero/mongo-replicaset
+    container_name: tyrant-api-mongo
+    expose:
+      - 27017
+      - 27018
+      - 27019
+    ports:
+      - 27017:27017 
+      - 27018:27018 
+      - 27019:27019 
+
+    volumes:
+      - ./db:/data/db
+    networks:
+      - umbrella-net
