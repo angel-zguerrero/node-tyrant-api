@@ -29,7 +29,7 @@ services:
       - umbrella-net
   tyrant-api-mongo:
     image: azguerrero/mongo-replicaset
-    container_name: tyrant-api-mongo
+    container_name: rs-mongo
     expose:
       - 27017
       - 27018
