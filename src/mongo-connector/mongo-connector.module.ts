@@ -1,9 +1,14 @@
 import { Global, Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
-
+import { ConfigModule, ConfigService } from '@nestjs/config';
 @Global()
 @Module({
   providers: [],
-  imports: [MongooseModule.forRoot('mongodb://tyrant-api-mongo:27017,tyrant-api-mongo:27018,tyrant-api-mongo:27019/tyrant?replicaSet=rs')]
+  imports: [MongooseModule.forRootAsync({
+    inject: [ConfigService],
+    useFactory: (configService: ConfigService)=>({
+      uri: configService.get<string>("mongodb.uri")
+    })
+  })]
 })
 export class MongoConnectorModule {}

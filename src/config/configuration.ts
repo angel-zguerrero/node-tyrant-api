@@ -1,5 +1,4 @@
-
-export const Config = {
+export default () => ({
   mongodb: {
     uri: process.env.MONGO_RS_URL,
     ssl: false,
@@ -7,4 +6,4 @@ export const Config = {
     sslValidate: false,
     sslCA: ''
   }
-}
+});
