@@ -1,6 +1,11 @@
+//@ts-check
 import {Global, Module } from '@nestjs/common';
-const Broker = require('rascal').Broker;
+import { RabbitmqConnector } from './rabbitmq-connector';
+
 
 @Global()
-@Module({})
+@Module({
+  imports: [RabbitmqConnector],
+  exports:[RabbitmqConnector]
+})
 export class RabbitmqConnectorModule {}

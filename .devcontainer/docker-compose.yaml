@@ -2,6 +2,7 @@ version: "3"
 
 volumes:
   tyrant-api-redis:
+  tyrant-api-rabbitmq:
 
 networks:
   umbrella-net:
@@ -41,5 +42,19 @@ services:
 
     volumes:
       - ./db:/data/db
+    networks:
+      - umbrella-net
+  tyrant-api-rabbitmq:
+    image: azguerrero/rabbitmq-deduplication
+    container_name: tyrant-api-rabbitmq
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    environment:
+      - RABBITMQ_DEFAULT_USER=admin
+      - RABBITMQ_DEFAULT_PASS=admin 
+    volumes:
+      - tyrant-api-rabbitmq:/var/lib/rabbitmq
+      - ./rabbitmq.conf:/etc/rabbitmq/rabbitmq.conf:ro
     networks:
       - umbrella-net

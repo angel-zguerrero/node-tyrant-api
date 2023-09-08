@@ -11,5 +11,8 @@ export default () => ({
     host: process.env.REDIS_HOST,
     username: process.env.REDIS_USERNAME,
     password: process.env.REDIS_PASSWORD
+  },
+  rabbitmq:{
+    url: process.env.RABBITMQ_URL
   }
 });
