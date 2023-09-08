@@ -5,7 +5,7 @@ import { ClientProxy, RmqRecordBuilder } from '@nestjs/microservices';
 
 @Controller('scientist-operator')
 export class ScientistOperatorController {
-  constructor(private readonly scientistOperatorService: ScientistOperatorService, @Inject('REDIS_CLIENT') private readonly redisConnector: Redis, @Inject('SCIENTIST_OPERATOR_SERVICE') private readonly rabbitConnector: ClientProxy) { }
+  constructor(private readonly scientistOperatorService: ScientistOperatorService, @Inject('REDIS_CLIENT') private readonly redisConnector: Redis, @Inject('SCIENTIST_OPERATOR_SERVICE') private readonly scientistOperatorConnector: ClientProxy) { }
   @Post('solve')
   async solve(@Body() operation: object): Promise<object> {
     await this.redisConnector.incr("scientist-operations-counter")
@@ -18,7 +18,7 @@ export class ScientistOperatorController {
         priority: 3,
       })
       .build();
-    await this.rabbitConnector.send('scientist-operations', record)
+    await this.scientistOperatorConnector.send('scientist-operations', record)
       .subscribe()
     return {
       register: this.scientistOperatorService.register(operation),

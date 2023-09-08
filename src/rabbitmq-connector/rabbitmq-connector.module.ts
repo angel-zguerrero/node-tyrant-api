@@ -1,11 +1,11 @@
 //@ts-check
-import {Global, Module } from '@nestjs/common';
-import { RabbitmqConnector } from './rabbitmq-connector';
+import { Global, Module } from '@nestjs/common';
+import { ScientistOperatorConnector } from './rabbitmq-connector';
 
 
 @Global()
 @Module({
-  imports: [RabbitmqConnector],
-  exports:[RabbitmqConnector]
+  imports: [ScientistOperatorConnector],
+  exports: [ScientistOperatorConnector]
 })
-export class RabbitmqConnectorModule {}
+export class RabbitmqConnectorModule { }

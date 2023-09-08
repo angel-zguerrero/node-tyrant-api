@@ -1,7 +1,7 @@
 import { ConfigService } from "@nestjs/config";
 import { ClientsModule, Transport } from "@nestjs/microservices";
 
-export const RabbitmqConnector = ClientsModule.registerAsync([{
+export const ScientistOperatorConnector = ClientsModule.registerAsync([{
   name: 'SCIENTIST_OPERATOR_SERVICE',
   useFactory: async (configService: ConfigService) => {
     return {
