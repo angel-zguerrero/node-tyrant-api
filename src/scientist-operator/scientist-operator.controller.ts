@@ -11,9 +11,11 @@ export class ScientistOperatorController {
   async solve(@Body() scientistOperation: CreateScientistOperationDto): Promise<object> {
     const session = await this.connection.startSession();
     try {
+      let scientistOperationResult = await this.scientistOperatorService.register(scientistOperation, session)
+      let publishResult = await this.scientistOperatorService.publish(scientistOperationResult)
       return {
-        register: (await this.scientistOperatorService.register(scientistOperation, session)),
-        publish: (await this.scientistOperatorService.publish(scientistOperation))
+        register: scientistOperationResult,
+        publish: publishResult
       }
     } catch (error) {
       throw new HttpException('Internal server error', HttpStatus.INTERNAL_SERVER_ERROR, { cause: error });

@@ -16,8 +16,8 @@ export class ScientistOperatorService {
     return await createdScientistOperation.save({session: clientSession});
   }
 
-  async publish(scientistOperationDto: CreateScientistOperationDto): Promise<string> {
-    const message = scientistOperationDto;
+  async publish(scientistOperation: ScientistOperation): Promise<string> {
+    const message = scientistOperation;
     const record = new RmqRecordBuilder(message)
       .setOptions({
         headers: {
