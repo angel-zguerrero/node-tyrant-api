@@ -1,4 +1,5 @@
 import { Module } from '@nestjs/common';
+import { AgendaConnectorModule } from './agenda-connector/agenda-connector.module';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { MongoConnectorModule } from './mongo-connector/mongo-connector.module';
@@ -6,15 +7,16 @@ import { ScientistOperatorModule } from './scientist-operator/scientist-operator
 import { RabbitmqConnectorModule } from './rabbitmq-connector/rabbitmq-connector.module';
 import { ConfigModule } from '@nestjs/config';
 import { RedisConnectorModule } from './redis-connector/redis-connector.module';
-import { WorkerScientistOperatorModule } from './workers/scientist-operator/worker-scientist-operator.module';
+import { WorkersModule } from './workers/workers.module';
 import configuration from './config/configuration';
 @Module({
   imports: [MongoConnectorModule,
     RedisConnectorModule,
     ScientistOperatorModule,
     RabbitmqConnectorModule,
+    AgendaConnectorModule,
     ConfigModule.forRoot({ isGlobal: true, load: [configuration] }),
-    WorkerScientistOperatorModule],
+    WorkersModule],
   controllers: [AppController],
   providers: [AppService],
 })
