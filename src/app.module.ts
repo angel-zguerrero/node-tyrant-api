@@ -6,9 +6,15 @@ import { ScientistOperatorModule } from './scientist-operator/scientist-operator
 import { RabbitmqConnectorModule } from './rabbitmq-connector/rabbitmq-connector.module';
 import { ConfigModule } from '@nestjs/config';
 import { RedisConnectorModule } from './redis-connector/redis-connector.module';
+import { WorkerScientistOperatorModule } from './workers/scientist-operator/worker-scientist-operator.module';
 import configuration from './config/configuration';
 @Module({
-  imports: [MongoConnectorModule, RedisConnectorModule, ScientistOperatorModule, RabbitmqConnectorModule, ConfigModule.forRoot({ isGlobal: true, load: [configuration] })],
+  imports: [MongoConnectorModule,
+    RedisConnectorModule,
+    ScientistOperatorModule,
+    RabbitmqConnectorModule,
+    ConfigModule.forRoot({ isGlobal: true, load: [configuration] }),
+    WorkerScientistOperatorModule],
   controllers: [AppController],
   providers: [AppService],
 })

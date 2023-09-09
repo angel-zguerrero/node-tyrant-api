@@ -8,7 +8,7 @@ import Redis from 'ioredis';
 @Injectable()
 export class ScientistOperatorService {
 
-  constructor(@InjectModel(ScientistOperation.name) private scientistOperationModel: Model<ScientistOperation>, @Inject('SCIENTIST_OPERATOR_SERVICE') private readonly scientistOperatorConnector: ClientProxy, @Inject('REDIS_CLIENT') private readonly redisConnector: Redis) { }
+  constructor(@InjectModel(ScientistOperation.name) private scientistOperationModel: Model<ScientistOperation>, @Inject('SCIENTIST_OPERATOR_CLIENT') private readonly scientistOperatorClient: ClientProxy, @Inject('REDIS_CLIENT') private readonly redisConnector: Redis) { }
 
   async register(scientistOperationDto: CreateScientistOperationDto, clientSession: ClientSession): Promise<ScientistOperation> {
     await this.redisConnector.incr("scientist-operations-counter")
@@ -26,7 +26,7 @@ export class ScientistOperatorService {
         priority: 3,
       })
       .build();
-    await this.scientistOperatorConnector.send('scientist-operations', record)
+    await this.scientistOperatorClient.send('scientist-operations-to-solve', record)
       .subscribe()
     return "publish-ok"
   }

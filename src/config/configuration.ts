@@ -14,7 +14,7 @@ export default () => ({
   },
   rabbitmq:{
     url: process.env.RABBITMQ_URL,
-    "scientist-request-queue": process.env.RABBITMQ_SCIENTIST_REQUEST_QUEUE,
-    "scientist-response-queue": process.env.RABBITMQ_SCIENTIST_RESPONSE_QUEUE
+    "scientist-operations-to-solve-queue": process.env.RABBITMQ_SCIENTIST_OPERATIONS_TO_SOLVE_QUEUE,
+    "scientist-operations-solved-queue": process.env.RABBITMQ_SCIENTIST_OPERATIONS_TO_SOLVED
   }
 });
