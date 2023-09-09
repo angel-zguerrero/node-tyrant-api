@@ -1,15 +1,25 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import { Body, Controller, HttpException, HttpStatus, Post } from '@nestjs/common';
 import { ScientistOperatorService } from './scientist-operator.service';
 import { CreateScientistOperationDto } from './dtos/scientist-operation.dto';
+import mongoose from 'mongoose';
+import {InjectConnection} from '@nestjs/mongoose';
 
 @Controller('scientist-operator')
 export class ScientistOperatorController {
-  constructor(private readonly scientistOperatorService: ScientistOperatorService) { }
+  constructor(private readonly scientistOperatorService: ScientistOperatorService, @InjectConnection() private readonly connection: mongoose.Connection) { }
   @Post('solve')
   async solve(@Body() scientistOperation: CreateScientistOperationDto): Promise<object> {
-    return {
-      register: (await this.scientistOperatorService.register(scientistOperation)),
-      publish: (await this.scientistOperatorService.publish(scientistOperation))
+    const session = await this.connection.startSession();
+    try {
+      return {
+        register: (await this.scientistOperatorService.register(scientistOperation, session)),
+        publish: (await this.scientistOperatorService.publish(scientistOperation))
+      }
+    } catch (error) {
+      throw new HttpException('Internal server error', HttpStatus.INTERNAL_SERVER_ERROR, { cause: error });
+    } finally {
+      await session.endSession();
     }
+
   }
 }
