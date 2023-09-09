@@ -8,7 +8,7 @@ export const ScientistOperatorConnector = ClientsModule.registerAsync([{
       transport: Transport.RMQ,
       options: {
         urls: [configService.get<string>("rabbitmq.url")],
-        queue: 'scientist-operations',
+        queue: configService.get<string>("rabbitmq.scientist-request-queue"),
         queueOptions: {
           durable: true
         },

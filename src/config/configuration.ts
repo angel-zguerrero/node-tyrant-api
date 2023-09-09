@@ -13,6 +13,8 @@ export default () => ({
     password: process.env.REDIS_PASSWORD
   },
   rabbitmq:{
-    url: process.env.RABBITMQ_URL
+    url: process.env.RABBITMQ_URL,
+    "scientist-request-queue": process.env.RABBITMQ_SCIENTIST_REQUEST_QUEUE,
+    "scientist-response-queue": process.env.RABBITMQ_SCIENTIST_RESPONSE_QUEUE
   }
 });
