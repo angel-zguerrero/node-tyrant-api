@@ -24,6 +24,7 @@ export class AgendaScheduler {
         try {
           await callback(job)
         } catch (error) {
+          console.log(error.stack)
           throw error
         }
       }
