@@ -8,6 +8,7 @@ import { RabbitmqConnectorModule } from './rabbitmq-connector/rabbitmq-connector
 import { ConfigModule } from '@nestjs/config';
 import { RedisConnectorModule } from './redis-connector/redis-connector.module';
 import { WorkersModule } from './workers/workers.module';
+import { IntegrationsModule } from './integrations/integrations.module';
 import configuration from './config/configuration';
 @Module({
   imports: [MongoConnectorModule,
@@ -16,7 +17,8 @@ import configuration from './config/configuration';
     RabbitmqConnectorModule,
     AgendaConnectorModule,
     ConfigModule.forRoot({ isGlobal: true, load: [configuration] }),
-    WorkersModule],
+    WorkersModule,
+    IntegrationsModule],
   controllers: [AppController],
   providers: [AppService],
 })

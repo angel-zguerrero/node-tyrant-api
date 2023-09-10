@@ -1,18 +1,17 @@
-import { HttpService } from '@nestjs/axios';
 import { Injectable, OnModuleInit } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { InjectModel } from '@nestjs/mongoose';
 import { Job } from 'agenda';
 import { Model } from 'mongoose';
 import { AgendaScheduler } from 'src/agenda-connector/agenda-connector';
-import { CreateScientistOperationNotification } from 'src/scientist-operator/dtos/scientist-operation.dto';
+import { NeptuneConnector } from 'src/integrations/neptune/neptune-connector';
 import { ScientistOperation } from 'src/scientist-operator/schemas/scientist-operation.schema';
 
 @Injectable()
 export class WorkerScientistOperatorAgendaService implements OnModuleInit {
   constructor(private readonly agendaScheduler: AgendaScheduler, private readonly configService: ConfigService,
-    @InjectModel(ScientistOperation.name) private scientistOperationModel: Model<ScientistOperation>,
-    private readonly httpService: HttpService) { }
+    @InjectModel(ScientistOperation.name) private scientistOperationModel: Model<ScientistOperation>, 
+    private readonly neptune: NeptuneConnector) { }
   onModuleInit() {
     this.initMarkStuckScientistOperationsAsFailed()
   }
@@ -46,12 +45,8 @@ export class WorkerScientistOperatorAgendaService implements OnModuleInit {
           })
 
         try {
-          let createScientistOperationNotification = new CreateScientistOperationNotification()
-          createScientistOperationNotification.code = "timeout-for-operation-resolution-notification"
-          createScientistOperationNotification.operation_ids = expiredScientistOperationIds.map((item) => { return item.toString() })
-
-          await self.httpService.post(self.configService.get<string>("workers.scientist-operator.stuck-scientist-operations-notification-webhook"), createScientistOperationNotification)
-            .subscribe()
+          let operationIds = expiredScientistOperationIds.map((item) => { return item.toString() })
+          await self.neptune.sendWebhookNotification( "timeout-for-operation-resolution-notification", operationIds)
         } catch (error) {
           console.log(error.stack)
         }
