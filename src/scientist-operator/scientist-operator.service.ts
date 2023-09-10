@@ -30,4 +30,8 @@ export class ScientistOperatorService {
       .subscribe()
     return "publish-ok"
   }
+
+  async findById(id: string): Promise<ScientistOperation>{
+    return await this.scientistOperationModel.findById(id)
+  }
 }
