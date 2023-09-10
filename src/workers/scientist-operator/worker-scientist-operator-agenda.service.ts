@@ -1,29 +1,20 @@
-import { Inject, Injectable, OnModuleInit } from '@nestjs/common';
-import { Agenda } from 'agenda'
+import { Injectable, OnModuleInit } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
+import { Job } from 'agenda';
+import { AgendaScheduler } from 'src/agenda-connector/agenda-connector';
 
 @Injectable()
 export class WorkerScientistOperatorAgendaService implements OnModuleInit {
-  constructor(@Inject('AGENDA_INSTANCE') private readonly agendaInstance: Agenda) { }
+  constructor(private readonly agendaScheduler: AgendaScheduler, private readonly configService: ConfigService) { }
   onModuleInit() {
     this.initMarkStuckScientistOperationsAsFailed()
   }
   async initMarkStuckScientistOperationsAsFailed() {
-    let interval = "20 seconds"
-    this.agendaInstance.define(
-      "MarkStuckScientistOperationsAsFailed",
-      async (job) => {
-        try {
-          console.log("MarkStuckScientistOperationsAsFailed.....")
-        } catch (error) {
-          throw error
-        }
-      }
-    );
-    let task = {}
-    let job = this.agendaInstance.create("MarkStuckScientistOperationsAsFailed",{});
-    let uniqTask = { ...task };
-    job.unique(uniqTask);
-    job.repeatEvery(interval);
-    await job.save();
+    let jobCallback = async (job: Job) =>{
+      console.log("excuting MarkStuckScientistOperationsAsFailed ")
+      console.log(job.attrs)
+    }
+    let interval = this.configService.get<string>("workers.scientist-operator.stuck-scientist-operations-as-failed-interval")
+    await this.agendaScheduler.scheduleJob("MarkStuckScientistOperationsAsFailed", interval, jobCallback, {})
   }
 }

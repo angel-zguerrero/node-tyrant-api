@@ -1,9 +1,9 @@
 import { Global, Module } from '@nestjs/common';
-import { AgendaConnector } from './agenda-connector';
+import { AgendaConnector, AgendaScheduler } from './agenda-connector';
 
 @Global()
 @Module({
-  providers: [AgendaConnector],
-  exports: ['AGENDA_INSTANCE']
+  providers: [AgendaConnector, AgendaScheduler],
+  exports: ['AGENDA_INSTANCE', AgendaScheduler]
 })
 export class AgendaConnectorModule {}

@@ -16,5 +16,10 @@ export default () => ({
     url: process.env.RABBITMQ_URL,
     "scientist-operations-to-solve-queue": process.env.RABBITMQ_SCIENTIST_OPERATIONS_TO_SOLVE_QUEUE,
     "scientist-operations-solved-queue": process.env.RABBITMQ_SCIENTIST_OPERATIONS_TO_SOLVED
+  },
+  workers:{
+    "scientist-operator":{
+      "stuck-scientist-operations-as-failed-interval": process.env.STUCK_SCIENTIST_OPERATIONS_AS_FAILED_INTERVAL || "1 minute"
+    }
   }
 });
