@@ -1,5 +1,5 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
-import { HydratedDocument } from "mongoose";
+import { HydratedDocument, SchemaTypes } from "mongoose";
 
 export type ScientistOperationDocument = HydratedDocument<ScientistOperation>;
 const expireTimeMs = 24 * 60 * 60 * 1000;
@@ -7,6 +7,12 @@ const expireTimeMs = 24 * 60 * 60 * 1000;
 export class ScientistOperation {
   @Prop({ type: Object, required: true })
   operation: Object
+
+  @Prop({ type: String, required: true, default: "pending", enum: ["pending", "success", "failed"] })
+  status: string
+
+  @Prop({ type: SchemaTypes.Mixed, required: false })
+  failedReason: string
 
   @Prop({ type: Date, default: Date.now() + expireTimeMs })
   ttl: Date
