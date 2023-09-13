@@ -56,7 +56,7 @@ export class ScientistOperatorController {
     }
 
     try {
-      return await this.scientistOperatorService.search(filter, cursor, limit, sort, fieldOrder, "date")
+      return await this.scientistOperatorService.search(filter, cursor, limit, sort, fieldOrder, fieldOrderType)
     } catch (error) {
       console.error(error)
       throw new HttpException('Internal server error', HttpStatus.INTERNAL_SERVER_ERROR, { cause: error });
