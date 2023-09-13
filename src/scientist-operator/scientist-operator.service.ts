@@ -71,6 +71,17 @@ export class ScientistOperatorService {
         }
       }
       if (finalFilter[fieldOrder]) {
+        let fieldOrderValue = finalFilter[fieldOrder]
+        delete finalFilter[fieldOrder]
+        if (!finalFilter.$and) {
+          finalFilter.$and = []
+        }
+        let fieldOrderKeyValue = {}
+        fieldOrderKeyValue[fieldOrder] = fieldOrderValue
+        finalFilter.$and.push(fieldOrderKeyValue)
+        let filterForCursorKeyValue = {}
+        filterForCursorKeyValue[fieldOrder] = filterForCursor[fieldOrder]
+        finalFilter.$and.push(filterForCursorKeyValue)
 
       } else {
         finalFilter = {
@@ -106,7 +117,7 @@ export class ScientistOperatorService {
       finalFilterGroup[fieldOrder] = lastGroupByFieldOrder
 
       if (cursorObject) {
-        let finalFilterGroupCursor = { }
+        let finalFilterGroupCursor = {}
         if (sort == 1 || sort == 'asc') {
           finalFilterGroupCursor['_id'] = {
             $gt: cursorObject._id
@@ -116,19 +127,37 @@ export class ScientistOperatorService {
             $lt: cursorObject._id
           }
         }
-        finalFilterGroup = {
-          ...finalFilterGroup,
-          ...finalFilterGroupCursor
+
+        if (fieldOrder == '_id') {
+          let fieldOrderValue = finalFilterGroup[fieldOrder]
+          delete finalFilterGroup[fieldOrder]
+          if (!finalFilterGroup.$and) {
+            finalFilterGroup.$and = []
+          }
+          let fieldOrderKeyValue = {}
+          fieldOrderKeyValue[fieldOrder] = fieldOrderValue
+          finalFilterGroup.$and.push(fieldOrderKeyValue)
+          let filterForCursorKeyValue = {}
+          filterForCursorKeyValue[fieldOrder] = finalFilterGroupCursor[fieldOrder]
+          finalFilterGroup.$and.push(filterForCursorKeyValue)
+        } else {
+          finalFilterGroup = {
+            ...finalFilterGroup,
+            ...finalFilterGroupCursor
+          }
         }
       }
+      let useSameFieldOrderValue = false
+      if (fieldOrder != "_id") {
+        let groupResults = await this.scientistOperationModel.find(finalFilterGroup)
+          .sort({ _id: sort })
+          .limit(limit)
+        let lastGroupByFieldOrderCounter = groupsByFieldOrder[lastGroupByFieldOrder].length
+        let removedResults = _.remove(results, (result) => { return result[fieldOrder] == lastGroupByFieldOrder })
+        useSameFieldOrderValue = _.size(removedResults) > 0
+        results = [...results, ..._.take(groupResults, lastGroupByFieldOrderCounter)]
+      }
 
-      let groupResults = await this.scientistOperationModel.find(finalFilterGroup)
-        .sort({ _id: sort })
-        .limit(limit)
-      let lastGroupByFieldOrderCounter = groupsByFieldOrder[lastGroupByFieldOrder].length
-      let removedResults = _.remove(results, (result) => { return result[fieldOrder] == lastGroupByFieldOrder })
-      let useSameFieldOrderValue = _.size(removedResults) > 0
-      results = [...results, ..._.take(groupResults, lastGroupByFieldOrderCounter)]
       if (results.length > 0) {
         nextCursor = (await this.encrypt(JSON.stringify({
           _id: results.at(-1)._id,
@@ -145,7 +174,7 @@ export class ScientistOperatorService {
     }
   }
 
-  async encrypt(text): Promise<string> {
+  async encrypt(text: string): Promise<string> {
     const password = '1234567';
     const key = (await promisify(scrypt)(password, 'salt', 32)) as Buffer;
     const cipher = createCipheriv('aes-256-ctr', key, this.iv);
@@ -154,7 +183,7 @@ export class ScientistOperatorService {
     return crypted
   }
 
-  async decrypt(text): Promise<string> {
+  async decrypt(text: string): Promise<string> {
     const password = '1234567';
     const key = (await promisify(scrypt)(password, 'salt', 32)) as Buffer;
     const decipher = createDecipheriv('aes-256-ctr', key, this.iv);
