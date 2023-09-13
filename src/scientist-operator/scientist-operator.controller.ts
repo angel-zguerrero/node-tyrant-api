@@ -1,8 +1,9 @@
-import { Body, Controller, Get, HttpException, HttpStatus, Param, Post, Query } from '@nestjs/common';
+import { Body, Controller, Get, HttpException, HttpStatus, Param, Post } from '@nestjs/common';
 import { ScientistOperatorService } from './scientist-operator.service';
 import { CreateScientistOperationDto } from './dtos/scientist-operation.dto';
 import mongoose from 'mongoose';
 import { InjectConnection } from '@nestjs/mongoose';
+import { ScientistOperation } from './schemas/scientist-operation.schema';
 
 @Controller('scientist-operator')
 export class ScientistOperatorController {
@@ -42,12 +43,20 @@ export class ScientistOperatorController {
     }
   }
   @Get('search')
-  async search(@Body() filter: any) {
+  async search(@Body() query: any) {
 
-    let cursor = filter.cursor
-    delete filter.cursor
+    let cursor = query.cursor
+    let filter = query.filter
+    let sort = query.sort || 1
+    let limit = query.limit || 100
+    let fieldOrder = query.fieldOrder || "updatedAt"
+    let fieldOrderType = "string"
+    if(["updatedAt", "createdAt"].includes(fieldOrder)){
+      fieldOrderType = "date"
+    }
+
     try {
-      return await this.scientistOperatorService.search(filter, cursor, 2, 1, "_id", "string")
+      return await this.scientistOperatorService.search(filter, cursor, limit, sort, fieldOrder, "date")
     } catch (error) {
       console.error(error)
       throw new HttpException('Internal server error', HttpStatus.INTERNAL_SERVER_ERROR, { cause: error });
