@@ -1,4 +1,4 @@
-import { Body, Controller, Get, HttpException, HttpStatus, Param, Post } from '@nestjs/common';
+import { Body, Controller, Get, HttpException, HttpStatus, Param, Post, Query } from '@nestjs/common';
 import { ScientistOperatorService } from './scientist-operator.service';
 import { CreateScientistOperationDto } from './dtos/scientist-operation.dto';
 import mongoose from 'mongoose';
@@ -18,6 +18,7 @@ export class ScientistOperatorController {
         publish: publishResult
       }
     } catch (error) {
+      console.error(error)
       throw new HttpException('Internal server error', HttpStatus.INTERNAL_SERVER_ERROR, { cause: error });
     } finally {
       await session.endSession();
@@ -33,10 +34,23 @@ export class ScientistOperatorController {
         return result
       }
     } catch (error) {
-      throw new HttpException('Scientist operation not found', HttpStatus.NOT_FOUND, { cause: error });
+      console.error(error)
+      throw new HttpException('Internal server error', HttpStatus.INTERNAL_SERVER_ERROR, { cause: error });
     }
-    if(!result){
+    if (!result) {
       throw new HttpException('Scientist operation not found', HttpStatus.NOT_FOUND);
+    }
+  }
+  @Get('search')
+  async search(@Body() filter: any) {
+
+    let cursor = filter.cursor
+    delete filter.cursor
+    try {
+      return await this.scientistOperatorService.search(filter, cursor, 2, 1, "updatedAt", "date")
+    } catch (error) {
+      console.error(error)
+      throw new HttpException('Internal server error', HttpStatus.INTERNAL_SERVER_ERROR, { cause: error });
     }
   }
 }

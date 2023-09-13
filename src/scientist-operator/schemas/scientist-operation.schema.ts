@@ -5,6 +5,7 @@ export type ScientistOperationDocument = HydratedDocument<ScientistOperation>;
 const expireTimeMs = 24 * 60 * 60 * 1000;
 @Schema({ timestamps: true })
 export class ScientistOperation {
+  _id: string
   @Prop({ type: Object, required: true })
   operation: Object
 
@@ -16,6 +17,9 @@ export class ScientistOperation {
 
   @Prop({ type: Date, default: Date.now() + expireTimeMs })
   ttl: Date
+
+  updatedAt: Date
+  createdAt: Date
 }
 
 export const ScientistOperationSchema = SchemaFactory.createForClass(ScientistOperation);
