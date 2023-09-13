@@ -9,6 +9,7 @@ import { ConfigModule } from '@nestjs/config';
 import { RedisConnectorModule } from './redis-connector/redis-connector.module';
 import { WorkersModule } from './workers/workers.module';
 import { IntegrationsModule } from './integrations/integrations.module';
+import { EncryptionModule } from './encryption/encryption.module';
 import configuration from './config/configuration';
 @Module({
   imports: [MongoConnectorModule,
@@ -18,7 +19,8 @@ import configuration from './config/configuration';
     AgendaConnectorModule,
     ConfigModule.forRoot({ isGlobal: true, load: [configuration] }),
     WorkersModule,
-    IntegrationsModule],
+    IntegrationsModule,
+    EncryptionModule],
   controllers: [AppController],
   providers: [AppService],
 })

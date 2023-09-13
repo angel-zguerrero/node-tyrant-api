@@ -5,16 +5,12 @@ import { InjectModel } from '@nestjs/mongoose';
 import { CreateScientistOperationDto } from './dtos/scientist-operation.dto';
 import { ClientProxy, RmqRecordBuilder } from '@nestjs/microservices';
 import Redis from 'ioredis';
-import { createCipheriv, randomBytes, scrypt, createDecipheriv } from 'crypto';
-import { promisify } from 'util';
+import { Encryption } from 'src/encryption/encryption';
 const _ = require('lodash');
 
 @Injectable()
 export class ScientistOperatorService {
-  iv: Buffer
-  constructor(@InjectModel(ScientistOperation.name) private scientistOperationModel: Model<ScientistOperation>, @Inject('SCIENTIST_OPERATOR_CLIENT') private readonly scientistOperatorClient: ClientProxy, @Inject('REDIS_CLIENT') private readonly redisConnector: Redis) {
-    this.iv = randomBytes(16);
-  }
+  constructor(@InjectModel(ScientistOperation.name) private scientistOperationModel: Model<ScientistOperation>, @Inject('SCIENTIST_OPERATOR_CLIENT') private readonly scientistOperatorClient: ClientProxy, @Inject('REDIS_CLIENT') private readonly redisConnector: Redis, private readonly encryption: Encryption) {}
 
   async register(scientistOperationDto: CreateScientistOperationDto, clientSession: ClientSession): Promise<ScientistOperation> {
     await this.redisConnector.incr("scientist-operations-counter")
@@ -47,7 +43,7 @@ export class ScientistOperatorService {
     }
     let cursorObject
     if (cursor) {
-      cursorObject = JSON.parse(await this.decrypt(cursor))
+      cursorObject = JSON.parse(await this.encryption.decrypt(cursor))
       let filterForCursor = {}
       if (sort == 1 || sort == 'asc') {
         if (cursorObject.useSameFieldOrderValue) {
@@ -159,7 +155,7 @@ export class ScientistOperatorService {
       }
 
       if (results.length > 0) {
-        nextCursor = (await this.encrypt(JSON.stringify({
+        nextCursor = (await this.encryption.encrypt(JSON.stringify({
           _id: results.at(-1)._id,
           fieldOrder: results.at(-1)[fieldOrder],
           useSameFieldOrderValue,
@@ -174,21 +170,5 @@ export class ScientistOperatorService {
     }
   }
 
-  async encrypt(text: string): Promise<string> {
-    const password = '1234567';
-    const key = (await promisify(scrypt)(password, 'salt', 32)) as Buffer;
-    const cipher = createCipheriv('aes-256-ctr', key, this.iv);
-    var crypted = cipher.update(text, 'utf8', 'hex')
-    crypted += cipher.final('hex');
-    return crypted
-  }
-
-  async decrypt(text: string): Promise<string> {
-    const password = '1234567';
-    const key = (await promisify(scrypt)(password, 'salt', 32)) as Buffer;
-    const decipher = createDecipheriv('aes-256-ctr', key, this.iv);
-    var dec = decipher.update(text, 'hex', 'utf8')
-    dec += decipher.final('utf8');
-    return dec
-  }
+  
 }
