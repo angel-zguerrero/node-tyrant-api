@@ -47,7 +47,7 @@ export class ScientistOperatorController {
     let cursor = filter.cursor
     delete filter.cursor
     try {
-      return await this.scientistOperatorService.search(filter, cursor, 2, 1, "updatedAt", "date")
+      return await this.scientistOperatorService.search(filter, cursor, 2, 1, "_id", "string")
     } catch (error) {
       console.error(error)
       throw new HttpException('Internal server error', HttpStatus.INTERNAL_SERVER_ERROR, { cause: error });

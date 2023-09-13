@@ -24,5 +24,8 @@ export default () => ({
       "stuck-scientist-operations-as-failed-limit": parseInt(process.env.STUCK_SCIENTIST_OPERATIONS_AS_FAILED_LIMIT, 10) || 100,
       "stuck-scientist-operations-notification-webhook": process.env.STUCK_SCIENTIST_OPERATIONS_NOTIFICATION_WEBHOOK
     }
+  },
+  encryption:{
+    password: process.env.ENCRYPTION_PASSWORD
   }
 });

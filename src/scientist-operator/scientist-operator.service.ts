@@ -86,7 +86,6 @@ export class ScientistOperatorService {
         }
       }
     }
-
     let nextCursor = undefined
     let results = await this.scientistOperationModel.find(finalFilter)
       .sort({ fieldOrder: sort })
@@ -113,15 +112,17 @@ export class ScientistOperatorService {
       finalFilterGroup[fieldOrder] = lastGroupByFieldOrder
 
       if (cursorObject) {
-        let finalFilterGroupCursor = {}
+        let finalFilterGroupCursor = {
+          $and: []
+        }
+        if(finalFilterGroup["_id"]){
+          finalFilterGroupCursor.$and.push({_id: finalFilterGroup["_id"]})
+          delete finalFilterGroup["_id"]
+        }
         if (sort == 1 || sort == 'asc') {
-          finalFilterGroupCursor['_id'] = {
-            $gt: cursorObject._id
-          }
+          finalFilterGroupCursor.$and.push({_id: { $gt: cursorObject._id }})
         } else {
-          finalFilterGroupCursor['_id'] = {
-            $lt: cursorObject._id
-          }
+          finalFilterGroupCursor.$and.push({_id: { $lt: cursorObject._id }})
         }
 
         if (fieldOrder == '_id') {
