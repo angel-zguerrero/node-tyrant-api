@@ -13,7 +13,7 @@ $ npm install
 
 ## Configuring the app
 
-Edit ***./.env*** file to use your own ENV VARS to cofingure Redis, MongoDB, Rabbitmq and the Application itself.
+Edit ***./.env*** file to use your own ENV VARS to configure Redis, MongoDB, Rabbitmq and the Application itself.
 
 ## Running the app
 
@@ -107,7 +107,7 @@ curl --location --request GET 'http://localhost:3000/scientist-operator/find/:id
 
 ```
 
-### Search operation by critery
+### Search operation by criteria
 
 #### Search operation request
 
