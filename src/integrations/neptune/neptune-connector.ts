@@ -12,7 +12,7 @@ export class NeptuneConnector {
       createScientistOperationNotification.code = notificationCode
       createScientistOperationNotification.operation_ids = operationIds
 
-      await this.httpService.post(this.configService.get<string>("workers.scientist-operator.stuck-scientist-operations-notification-webhook"), createScientistOperationNotification)
+      await this.httpService.post(this.configService.get<string>("workers.scientist-operator.scientist-operations-notification-webhook"), createScientistOperationNotification)
         .subscribe()
     } catch (error) {
       console.log(error.stack)
