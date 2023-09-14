@@ -157,7 +157,7 @@ The last page returns a ***empty result array*** and none ***cursor***
 
 ### Webhook to listen to change status operations
 
-This Microservice send a post request to the url configured in ***SCIENTIST_OPERATIONS_NOTIFICATION_WEBHOOK*** ENV VAR with the operation ids that was updated, use their ids with ***"Detail operation request"***  endpoint to know their status
+This Microservice sends a post request to the url configured in ***SCIENTIST_OPERATIONS_NOTIFICATION_WEBHOOK*** ENV VAR with the operation IDs that were updated, use their ids with ***"Detail operation request"***  endpoint to know their status
 
 
 ```javascript
