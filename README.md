@@ -153,7 +153,7 @@ Use cursor value to call the endpoint to pass to the next page
 
 ```
 
-The last page returns a ***empty result array*** and none ***cursor***
+The last page returns an ***empty result array*** and none ***cursor***
 
 ### Webhook to listen to change status operations
 
