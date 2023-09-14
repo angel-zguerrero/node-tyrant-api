@@ -1,4 +1,7 @@
 export default () => ({
+  app:{
+    port: parseInt(process.env.APP_PORT, 10) || 3000
+  },
   mongodb: {
     uri: process.env.MONGO_RS_URL,
     ssl: false,
