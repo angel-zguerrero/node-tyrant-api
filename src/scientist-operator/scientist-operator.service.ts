@@ -6,11 +6,12 @@ import { CreateScientistOperationDto } from './dtos/scientist-operation.dto';
 import { ClientProxy, RmqRecordBuilder } from '@nestjs/microservices';
 import Redis from 'ioredis';
 import { Encryption } from 'src/encryption/encryption';
+import { ConfigService } from '@nestjs/config';
 const _ = require('lodash');
 
 @Injectable()
 export class ScientistOperatorService {
-  constructor(@InjectModel(ScientistOperation.name) private scientistOperationModel: Model<ScientistOperation>, @Inject('SCIENTIST_OPERATOR_CLIENT') private readonly scientistOperatorClient: ClientProxy, @Inject('REDIS_CLIENT') private readonly redisConnector: Redis, private readonly encryption: Encryption) {}
+  constructor(@InjectModel(ScientistOperation.name) private scientistOperationModel: Model<ScientistOperation>, @Inject('SCIENTIST_OPERATOR_CLIENT') private readonly scientistOperatorClient: ClientProxy, @Inject('REDIS_CLIENT') private readonly redisConnector: Redis, private readonly encryption: Encryption, private readonly configService: ConfigService) {}
 
   async register(scientistOperationDto: CreateScientistOperationDto, clientSession: ClientSession): Promise<ScientistOperation> {
     await this.redisConnector.incr("scientist-operations-counter")
@@ -28,8 +29,10 @@ export class ScientistOperatorService {
         priority: 3,
       })
       .build();
-    await this.scientistOperatorClient.send('scientist-operations-to-solve', record)
-      .subscribe()
+
+    await this.scientistOperatorClient.send(this.configService.get<string>("rabbitmq.scientist-operations-to-solve-queue"), record)
+    .subscribe({complete: console.info, error: console.error,  next: (v) => console.log(v)})
+
     return "publish-ok"
   }
 
