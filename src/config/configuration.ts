@@ -18,7 +18,7 @@ export default () => ({
   rabbitmq:{
     url: process.env.RABBITMQ_URL,
     "scientist-operations-to-solve-queue": process.env.RABBITMQ_SCIENTIST_OPERATIONS_TO_SOLVE_QUEUE,
-    "scientist-operations-solved-queue": process.env.RABBITMQ_SCIENTIST_OPERATIONS_TO_SOLVED
+    "scientist-operations-solved-queue": process.env.RABBITMQ_SCIENTIST_OPERATIONS_SOLVED
   },
   workers:{
     "scientist-operator":{
