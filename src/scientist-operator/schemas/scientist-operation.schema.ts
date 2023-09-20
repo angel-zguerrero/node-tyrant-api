@@ -9,6 +9,9 @@ export class ScientistOperation {
   @Prop({ type: Object, required: true })
   operation: Object
 
+  @Prop({ type: Object, required: false })
+  resultData: Object
+
   @Prop({ type: String, required: true, default: "pending", enum: ["pending", "success", "failed"] })
   status: string
 
