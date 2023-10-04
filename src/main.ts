@@ -5,6 +5,7 @@ import { ConfigService } from '@nestjs/config';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+  app.enableCors();
   const configService = app.get<ConfigService>(ConfigService)
   // We need to call this method in order to consume messages. We call it many times with for different queues
   app.connectMicroservice<MicroserviceOptions>({
