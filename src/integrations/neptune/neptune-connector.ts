@@ -2,6 +2,7 @@ import { HttpService } from '@nestjs/axios';
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { CreateScientistOperationNotification } from 'src/scientist-operator/dtos/scientist-operation.dto';
+import { lastValueFrom } from 'rxjs';
 
 @Injectable()
 export class NeptuneConnector {
@@ -12,11 +13,10 @@ export class NeptuneConnector {
       createScientistOperationNotification.code = notificationCode
       createScientistOperationNotification.operation_ids = operationIds
 
-      await this.httpService.post(this.configService.get<string>("workers.scientist-operator.scientist-operations-notification-webhook"), createScientistOperationNotification)
-        .subscribe()
+      await lastValueFrom(this.httpService.post(this.configService.get<string>("workers.scientist-operator.scientist-operations-notification-webhook"), createScientistOperationNotification))
     } catch (error) {
+      console.log("Handling axios error.")
       console.log(error.stack)
-      throw error
     }
   }
 }
