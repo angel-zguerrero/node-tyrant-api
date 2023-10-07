@@ -1,0 +1,75 @@
+version: "3"
+
+volumes:
+  tyrant-api-redis:
+  tyrant-api-rabbitmq:
+
+networks:
+  umbrella-net:
+    name: "umbrella-net"
+    external: false
+services:
+  tyrant-api-environment:
+    image: azguerrero/node-tyrant-api  
+    volumes:
+      - ../:/tyrant-api-environment
+    expose:
+      - 17323
+    ports:
+      - 17323:17323 
+    networks:
+      - umbrella-net
+    environment:
+      - MONGO_RS_URL=mongodb://rs-mongo:27017,rs-mongo:27018,rs-mongo:27019/tyrant?replicaSet=rs
+      - REDIS_PORT=6379
+      - REDIS_HOST=tyrant-api-redis
+      - REDIS_USERNAME=
+      - REDIS_PASSWORD=
+      - RABBITMQ_URL=amqp://admin:admin@tyrant-api-rabbitmq:5672
+      - RABBITMQ_SCIENTIST_OPERATIONS_TO_SOLVE_QUEUE=scientist-operations-to-solve
+      - RABBITMQ_SCIENTIST_OPERATIONS_SOLVED=scientist-operations-solved
+      - STUCK_SCIENTIST_OPERATIONS_AS_FAILED_INTERVAL=20 seconds
+      - STUCK_SCIENTIST_OPERATIONS_AS_FAILED_LIMIT=200
+      - STUCK_SCIENTIST_OPERATIONS_AS_FAILED_WINDOW=10
+      - SCIENTIST_OPERATIONS_NOTIFICATION_WEBHOOK=http://localhost:4000/api/tyrant-api/notification
+      - ENCRYPTION_PASSWORD=123456789
+  tyrant-api-redis:
+    image: redis
+    volumes:
+      - tyrant-api-redis:/data
+    expose:
+      - 6379
+    ports:
+      - 6379:6379      
+    restart: unless-stopped
+    networks:
+      - umbrella-net
+  tyrant-api-mongo:
+    image: azguerrero/mongo-replicaset
+    container_name: rs-mongo
+    expose:
+      - 27017
+      - 27018
+      - 27019
+    ports:
+      - 27017:27017 
+      - 27018:27018 
+      - 27019:27019 
+
+    volumes:
+      - ./db:/data/db
+    networks:
+      - umbrella-net
+  tyrant-api-rabbitmq:
+    image: azguerrero/rabbitmq-deduplication
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    environment:
+      - RABBITMQ_DEFAULT_USER=admin
+      - RABBITMQ_DEFAULT_PASS=admin 
+    volumes:
+      - tyrant-api-rabbitmq:/var/lib/rabbitmq
+      - ./rabbitmq.conf:/etc/rabbitmq/rabbitmq.conf:ro
+    networks:
+      - umbrella-net
