@@ -12,11 +12,14 @@ export class ScientistOperation {
   @Prop({ type: Object, required: false })
   resultData: Object
 
-  @Prop({ type: String, required: true, default: "pending", enum: ["pending", "success", "failed"] })
+  @Prop({ type: String, required: true, default: "pending", enum: ["pending", "success", "failed", "processing"] })
   status: string
 
   @Prop({ type: SchemaTypes.Mixed, required: false })
   failedReason: string
+
+  @Prop({ type: SchemaTypes.Number, required: true, default: 0 })
+  progress: Number
 
   @Prop({ type: Date, default: Date.now() + expireTimeMs })
   ttl: Date

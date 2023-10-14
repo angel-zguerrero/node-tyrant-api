@@ -17,26 +17,47 @@ export class WorkerScientistOperatorController {
       console.log(`Pattern: ${context.getPattern()}`);
       const originalMsg = context.getMessage();
       const channel = context.getChannelRef();
-      const operationResult = JSON.parse(context.getMessage().content.toString())
-      channel.ack(originalMsg);
-      let payload = {
-        status: operationResult.status,
-        resultData: operationResult.result,
-        failedReason: operationResult.failedReason
-      }
 
-      await this.scientistOperationModel.updateMany({
-          _id: {
-            $in: [operationResult._id]
+      try {
+        const operationResult = JSON.parse(context.getMessage().content.toString())
+        let payload : any = {
+          status: operationResult.status,
+          resultData: operationResult.result,
+          failedReason: operationResult.failedReason
+        }
+
+        if(operationResult.progress_increase){
+          payload.$inc = {
+            progress: operationResult.progress_increase
           }
-        },
-        payload
-      )
-      let resolutionNotification = operationResult.status == "success"? "sucess-resolution-notification": "failed-resolution-notification"
-      let operationIds = [operationResult._id]
-      await this.neptune.sendWebhookNotification(resolutionNotification, operationIds)
-    } catch (error) {
-      console.error(error)
+        }else{
+
+        }
+
+        if(payload.status == "success"){
+          payload.progress = 100;
+        }
+  
+        await this.scientistOperationModel.updateMany({
+            _id: {
+              $in: [operationResult._id]
+            },
+            status:{
+              $nin: ["success", "failed"]
+            }
+          },
+          payload
+        )
+        let resolutionNotification = operationResult.status == "success"? "sucess-resolution-notification": "failed-resolution-notification"
+        let operationIds = [operationResult._id]
+        await this.neptune.sendWebhookNotification(resolutionNotification, operationIds)
+      } catch (error) {
+        console.error(error)
+      }finally{
+        channel.ack(originalMsg);
+      }
+    } catch (generalError) {
+      console.error(generalError)
     }
   }
 }

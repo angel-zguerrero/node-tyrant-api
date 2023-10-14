@@ -7,6 +7,7 @@ export class CreateScientistOperationDto {
   createdAt: Date
   updatedAt: Date
   failedReason: String
+  progress: Number
 }
 
 export class CreateScientistOperationNotification {
