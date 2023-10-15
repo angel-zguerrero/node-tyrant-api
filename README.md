@@ -186,3 +186,7 @@ $ docker-compose up --build
 ### Note
 
 Before running this service, you must first run this application [Elixir Pendulum App](https://github.com/angel-zguerrero/elixir-pendulum-app).
+
+## Author
+
+- [@angel-zguerrero](https://github.com/angel-zguerrero)
