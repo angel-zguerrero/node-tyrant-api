@@ -4,6 +4,9 @@ Umbrella Corp's Microservice (fictitious but functional) as a transport layer fo
 
 Written in NodeJs with NestJS using MongoDB as a backend to store the state of the operations, Redis to store the operation count and a connection with RabbitMQ to send and receive the operations and their results from [Elixir Pendulum App](https://github.com/angel-zguerrero/elixir-pendulum-app)
 
+### See in action
+
+You can see all the ecosystem in action of this this distributed service deploying [Distributed Hive Network](https://github.com/angel-zguerrero/hive-docker/blob/main/distributed-hive-network).
 
 ## Installation
 
@@ -169,3 +172,17 @@ This Microservice sends a post request to the url configured in ***SCIENTIST_OPE
 }
 
 ```
+
+## Docker
+
+This application can be easily run on Docker. You can use `Dockerfile` to create and push the image to a Docker repository for use in a production environment.
+
+You can run this application and its services using the `compose-file.yaml` docker.
+
+```bash
+$ docker-compose up --build
+```
+
+### Note
+
+Before running this service, you must first run this application [Elixir Pendulum App](https://github.com/angel-zguerrero/elixir-pendulum-app).
