@@ -1,7 +1,6 @@
 version: "3"
 
 volumes:
-  pendulum-app-rabbitmq:
   tyrant-api-redis: 
 networks:
   umbrella-net:
@@ -10,7 +9,9 @@ networks:
 name: tyrant-services
 services:
   tyrant-api:
-    image: azguerrero/node-tyrant-api  
+    build:
+      context: .
+      dockerfile: ./Dockerfile  
     restart: on-failure
     depends_on: 
       - tyrant-api-mongo
