@@ -4,9 +4,23 @@ Umbrella Corp's Microservice (fictitious but functional) as a transport layer fo
 
 Written in NodeJs with NestJS using MongoDB as a backend to store the state of the operations, Redis to store the operation count and a connection with RabbitMQ to send and receive the operations and their results from [Elixir Pendulum App](https://github.com/angel-zguerrero/elixir-pendulum-app)
 
-### See in action
+## See in action
 
 You can see all the ecosystem in action of this this distributed service deploying [Distributed Hive Network](https://github.com/angel-zguerrero/hive-docker/blob/main/distributed-hive-network).
+
+## Tech Stack
+
+- [NestJS](https://docs.nestjs.com)
+- [TypeScript](https://www.typescriptlang.org)
+- [MongoDB](https://www.mongodb.com/es)
+
+## Techniques
+
+- [Dependency Injection Pattern](https://docs.nestjs.com/providers#dependency-injection)
+- [Middleware Pattern](https://docs.nestjs.com/middleware)
+- [Decorator Pattern](https://docs.nestjs.com/custom-decorators#decorator-composition) 
+- [ORM](https://docs.nestjs.com/techniques/mongodb)
+- [Docker Container](https://www.docker.com/resources/what-container)
 
 ## Installation
 
@@ -189,4 +203,4 @@ Before running this service, you must first run this application [Elixir Pendulu
 
 ## Author
 
-- [@angel-zguerrero](https://github.com/angel-zguerrero)
+[@angel-zguerrero](https://github.com/angel-zguerrero)
